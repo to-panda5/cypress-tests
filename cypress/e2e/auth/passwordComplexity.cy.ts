@@ -1,35 +1,33 @@
 export {};
 
-const customerData = {
-  fullName: 'John Doe 6259',
-  email: `johndoe6259@mail.com`,
+const baseUrl = Cypress.config('baseUrl');
+const customer = {
+  name: 'Emily Johnson',
+  email: 'emilyjohnson@mail.com',
 };
+let password: string;
 
 /**
  * Delete customer with given email if exists.
  */
 before(() => {
-  cy.deleteCustomerByEmail(customerData.email);
+  cy.deleteCustomerByEmail(customer.email);
 });
 
 /**
- * Clean up after tests.
+ * Delete customer after every test.
  */
 afterEach(() => {
-  cy.deleteCustomerByEmail(customerData.email);
+  cy.deleteCustomerByEmail(customer.email);
 });
 
-describe('Password complexity', () => {
-  let password: string;
-  const baseUrl = Cypress.config('baseUrl');
+describe('Password complexity requirements', () => {
   const runOptionalTests = Cypress.env('RUN_OPTIONAL_TESTS');
 
   it('Displays error for empty password', () => {
     cy.visit('/account/register');
-    cy.get('.register-form input[name="full_name"]').type(
-      customerData.fullName,
-    );
-    cy.get('.register-form input[name="email"]').type(customerData.email);
+    cy.get('.register-form input[name="full_name"]').type(customer.name);
+    cy.get('.register-form input[name="email"]').type(customer.email);
     cy.get('.register-form button[type="button"]').click();
 
     cy.url().should('eq', `${baseUrl}/account/register`);
@@ -43,10 +41,8 @@ describe('Password complexity', () => {
     cy.intercept('POST', '/api/customers/sessions').as('login');
 
     cy.visit('/account/register');
-    cy.get('.register-form input[name="full_name"]').type(
-      customerData.fullName,
-    );
-    cy.get('.register-form input[name="email"]').type(customerData.email);
+    cy.get('.register-form input[name="full_name"]').type(customer.name);
+    cy.get('.register-form input[name="email"]').type(customer.email);
     cy.get('.register-form input[name="password"]').type(password);
     cy.get('.register-form button[type="button"]').click();
 
@@ -58,17 +54,15 @@ describe('Password complexity', () => {
       .should('not.be.empty');
   });
 
-  // OPTIONAL
+  // OPTIONAL TEST
   if (runOptionalTests) {
     it('Displays error for incomplete password (missing character groups)', () => {
       password = 'abcabcabcabcabc';
       cy.intercept('POST', '/api/customers/sessions').as('login');
 
       cy.visit('/account/register');
-      cy.get('.register-form input[name="full_name"]').type(
-        customerData.fullName,
-      );
-      cy.get('.register-form input[name="email"]').type(customerData.email);
+      cy.get('.register-form input[name="full_name"]').type(customer.name);
+      cy.get('.register-form input[name="email"]').type(customer.email);
       cy.get('.register-form input[name="password"]').type(password);
       cy.get('.register-form button[type="button"]').click();
 
@@ -85,21 +79,19 @@ describe('Password complexity', () => {
     password = 'sk[MV&v-898h[lllprv[DUo';
 
     cy.visit('/account/register');
-    cy.get('.register-form input[name="full_name"]').type(
-      customerData.fullName,
-    );
-    cy.get('.register-form input[name="email"]').type(customerData.email);
+    cy.get('.register-form input[name="full_name"]').type(customer.name);
+    cy.get('.register-form input[name="email"]').type(customer.email);
     cy.get('.register-form input[name="password"]').type(password);
     cy.get('.register-form button[type="button"]').click();
 
     cy.url().should('eq', `${baseUrl}/`);
     cy.get('a[href="/account').click();
 
-    cy.get('.account-details-name').should('contain', customerData.fullName);
-    cy.get('.account-details-email').should('contain', customerData.email);
+    cy.get('.account-details-name').should('contain', customer.name);
+    cy.get('.account-details-email').should('contain', customer.email);
   });
 
-  // OPTIONAL
+  // OPTIONAL TEST
   if (runOptionalTests) {
     it('Enforces custom password policy for admin (Optional)', () => {
       throw new Error('Not implemented');
