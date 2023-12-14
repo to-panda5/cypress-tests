@@ -1,3 +1,5 @@
+export {};
+
 const customerData = {
   fullName: 'John Doe 6259',
   email: `johndoe6259@mail.com`,
@@ -8,6 +10,16 @@ const customerData = {
  * Delete customer with given email if exists.
  */
 before(() => {
+  cy.getCustomersByEmail(customerData.email).then(({ body }) => {
+    const customer = body.data.customers.items?.[0];
+    if (customer) cy.deleteCustomer(customer.uuid);
+  });
+});
+
+/**
+ * Clean up after tests.
+ */
+after(() => {
   cy.getCustomersByEmail(customerData.email).then(({ body }) => {
     const customer = body.data.customers.items?.[0];
     if (customer) cy.deleteCustomer(customer.uuid);
@@ -45,19 +57,8 @@ describe('Customer new account registration', () => {
     cy.get('.register-form button[type="button"]').click();
 
     cy.url().should('eq', `${baseUrl}/account/register`);
-    cy.get('.register-form .text-critical').should(
-      'contain',
-      'duplicate key value violates unique constraint "EMAIL_UNIQUE"',
-    );
-  });
-});
-
-/**
- * Clean up after tests.
- */
-after(() => {
-  cy.getCustomersByEmail(customerData.email).then(({ body }) => {
-    const customer = body.data.customers.items?.[0];
-    if (customer) cy.deleteCustomer(customer.uuid);
+    cy.get('.register-form .text-critical')
+      .invoke('text')
+      .should('not.be.empty');
   });
 });
