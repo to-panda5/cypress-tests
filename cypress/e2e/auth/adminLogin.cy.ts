@@ -37,17 +37,20 @@ describe('Admin login and logout', () => {
 
     cy.url().should('eq', `${baseUrl}/admin`);
     cy.get('a.first-letter').click();
-    cy.get('a.text-critical').should('contain', 'Logout').click();
+    cy.get('a.text-critical').contains('Logout').click();
 
     cy.url().should('eq', `${baseUrl}/admin/login`);
   });
 
   it('Prevents from logging in with invalid credentials', () => {
-    cy.get('form#adminLoginForm input[name="email"]').type('invalid@mail');
+    cy.get('form#adminLoginForm input[name="email"]').type('invalid@mail.com');
     cy.get('form#adminLoginForm input[name="password"]').type('invalid');
     cy.get('form#adminLoginForm button[type="submit"]').click();
 
     cy.url().should('eq', `${baseUrl}/admin/login`);
-    cy.get('.field-error .text-critical').invoke('text').should('not.be.empty');
+    cy.get('.admin-login-form .text-critical')
+      .should('have.length', 1)
+      .invoke('text')
+      .should('not.be.empty');
   });
 });
