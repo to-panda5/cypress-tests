@@ -1,25 +1,68 @@
-// ***********************************************
-// This example commands.js shows you how to
-// create various custom commands and overwrite
-// existing commands.
-//
-// For more comprehensive examples of custom
-// commands please read more here:
-// https://on.cypress.io/custom-commands
-// ***********************************************
-//
-//
-// -- This is a parent command --
-// Cypress.Commands.add('login', (email, password) => { ... })
-//
-//
-// -- This is a child command --
-// Cypress.Commands.add('drag', { prevSubject: 'element'}, (subject, options) => { ... })
-//
-//
-// -- This is a dual command --
-// Cypress.Commands.add('dismiss', { prevSubject: 'optional'}, (subject, options) => { ... })
-//
-//
-// -- This will overwrite an existing command --
-// Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
+Cypress.Commands.add('authenticate', () =>
+  cy.request({
+    method: 'POST',
+    url: 'http://localhost:3000/api/user/sessions',
+    body: {
+      email: 'admin@mail.com',
+      password: 'zaq1@WSX',
+    },
+  }),
+);
+
+Cypress.Commands.add('getCustomers', () =>
+  cy.request({
+    method: 'GET',
+    url: 'http://localhost:3000/api/graphql',
+    body: {
+      query: `
+        query {
+          customers {
+            items {
+              uuid
+              fullName
+              email
+            }
+          }
+        }
+      `,
+    },
+  }),
+);
+
+Cypress.Commands.add('getCustomersByEmail', (email: string) =>
+  cy.request({
+    method: 'GET',
+    url: 'http://localhost:3000/api/graphql',
+    body: {
+      query: `
+        query ($customerEmail: String) {
+          customers(
+            filters: [
+              {
+                operation: "=",
+                key: "email",
+                value: $customerEmail
+              }
+            ]
+          ) {
+            items {
+              uuid
+              fullName
+              email
+            }
+          }
+        }
+      `,
+      variables: {
+        customerEmail: email,
+      },
+    },
+  }),
+);
+
+Cypress.Commands.add('deleteCustomer', (uuid: string) => {
+  cy.request({
+    method: 'DELETE',
+    url: `http://localhost:3000/api/customers/${uuid}`,
+  });
+});
