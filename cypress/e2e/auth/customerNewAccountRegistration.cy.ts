@@ -10,20 +10,14 @@ const customerData = {
  * Delete customer with given email if exists.
  */
 before(() => {
-  cy.getCustomersByEmail(customerData.email).then(({ body }) => {
-    const customer = body.data.customers.items?.[0];
-    if (customer) cy.deleteCustomer(customer.uuid);
-  });
+  cy.deleteCustomerByEmail(customerData.email);
 });
 
 /**
  * Clean up after tests.
  */
 after(() => {
-  cy.getCustomersByEmail(customerData.email).then(({ body }) => {
-    const customer = body.data.customers.items?.[0];
-    if (customer) cy.deleteCustomer(customer.uuid);
-  });
+  cy.deleteCustomerByEmail(customerData.email);
 });
 
 describe('Customer new account registration', () => {

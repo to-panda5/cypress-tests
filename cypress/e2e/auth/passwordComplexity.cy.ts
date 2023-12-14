@@ -9,20 +9,14 @@ const customerData = {
  * Delete customer with given email if exists.
  */
 before(() => {
-  cy.getCustomersByEmail(customerData.email).then(({ body }) => {
-    const customer = body.data.customers.items?.[0];
-    if (customer) cy.deleteCustomer(customer.uuid);
-  });
+  cy.deleteCustomerByEmail(customerData.email);
 });
 
 /**
  * Clean up after tests.
  */
 afterEach(() => {
-  cy.getCustomersByEmail(customerData.email).then(({ body }) => {
-    const customer = body.data.customers.items?.[0];
-    if (customer) cy.deleteCustomer(customer.uuid);
-  });
+  cy.deleteCustomerByEmail(customerData.email);
 });
 
 describe('Password complexity', () => {
@@ -107,6 +101,8 @@ describe('Password complexity', () => {
 
   // OPTIONAL
   if (runOptionalTests) {
-    it('Enforces custom password policy for admin (Optional)', () => {});
+    it('Enforces custom password policy for admin (Optional)', () => {
+      throw new Error('Not implemented');
+    });
   }
 });
