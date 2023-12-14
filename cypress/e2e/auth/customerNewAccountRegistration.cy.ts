@@ -1,12 +1,24 @@
 const customerData = {
-  fullName: 'John Doe',
-  email: `johndoe@mail.com`,
+  fullName: 'John Doe 6259',
+  email: `johndoe6259@mail.com`,
   password: 'zaq1@WSX',
 };
 
+/**
+ * Delete customer with given email if exists.
+ */
+before(() => {
+  cy.getCustomersByEmail(customerData.email).then(({ body }) => {
+    const customer = body.data.customers.items?.[0];
+    if (customer) cy.deleteCustomer(customer.uuid);
+  });
+});
+
 describe('Customer new account registration', () => {
+  const baseUrl = Cypress.config('baseUrl');
+
   it('Registers new customer account', () => {
-    cy.visit('http://localhost:3000/account/register');
+    cy.visit('/account/register');
 
     cy.get('.register-form input[name="full_name"]').type(
       customerData.fullName,
@@ -15,7 +27,7 @@ describe('Customer new account registration', () => {
     cy.get('.register-form input[name="password"]').type(customerData.password);
     cy.get('.register-form button[type="button"]').click();
 
-    cy.url().should('eq', 'http://localhost:3000/account/register');
+    cy.url().should('eq', `${baseUrl}/account/register`);
     cy.get('a[href="/account').click();
 
     cy.get('.account-details-name').should('contain', customerData.fullName);
@@ -23,7 +35,7 @@ describe('Customer new account registration', () => {
   });
 
   it('Prevents from registering new customer account with existing email', () => {
-    cy.visit('http://localhost:3000/account/register');
+    cy.visit('/account/register');
 
     cy.get('.register-form input[name="full_name"]').type(
       customerData.fullName,
@@ -32,7 +44,7 @@ describe('Customer new account registration', () => {
     cy.get('.register-form input[name="password"]').type(customerData.password);
     cy.get('.register-form button[type="button"]').click();
 
-    cy.url().should('eq', 'http://localhost:3000/account/register');
+    cy.url().should('eq', `${baseUrl}/account/register`);
     cy.get('.register-form .text-critical').should(
       'contain',
       'duplicate key value violates unique constraint "EMAIL_UNIQUE"',
@@ -40,11 +52,12 @@ describe('Customer new account registration', () => {
   });
 });
 
+/**
+ * Clean up after tests.
+ */
 after(() => {
-  cy.authenticate()
-    .getCustomersByEmail(customerData.email)
-    .then(({ body }) => {
-      const customer = body.data.customers.items[0];
-      cy.deleteCustomer(customer.uuid);
-    });
+  cy.getCustomersByEmail(customerData.email).then(({ body }) => {
+    const customer = body.data.customers.items?.[0];
+    if (customer) cy.deleteCustomer(customer.uuid);
+  });
 });

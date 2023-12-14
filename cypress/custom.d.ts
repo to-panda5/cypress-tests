@@ -1,3 +1,14 @@
+declare namespace Cypress {
+  interface Chainable {
+    authenticate: () => Chainable<Response<void>>;
+    getCustomers: () => Chainable<Response<GetCustomersResponse>>;
+    getCustomersByEmail: (
+      email: string,
+    ) => Chainable<Response<GetCustomersResponse>>;
+    deleteCustomer: (uuid: string) => Chainable<Response<void>>;
+  }
+}
+
 type GetCustomersResponse = {
   data: {
     customers: {
@@ -9,14 +20,3 @@ type GetCustomersResponse = {
     };
   };
 };
-
-declare namespace Cypress {
-  interface Chainable {
-    authenticate: () => Chainable<Response<void>>;
-    getCustomers: () => Chainable<Response<GetCustomersResponse>>;
-    getCustomersByEmail: (
-      email: string,
-    ) => Chainable<Response<GetCustomersResponse>>;
-    deleteCustomer: (uuid: string) => Chainable<Response<void>>;
-  }
-}
