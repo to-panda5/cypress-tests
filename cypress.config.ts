@@ -1,11 +1,11 @@
 import { defineConfig } from 'cypress';
+import dotenv from 'dotenv';
 
-module.exports = defineConfig({
-  env: {
-    ADMIN_EMAIL: 'admin@mail.com',
-    ADMIN_PASSWORD: 'zaq1@WSX',
-  },
+const env = dotenv.config().parsed;
+
+export default defineConfig({
   e2e: {
-    baseUrl: 'http://localhost:3000',
+    baseUrl: env.SHOPMOST_BASE_URL,
   },
+  env,
 });
