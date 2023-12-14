@@ -1,11 +1,9 @@
 import { defineConfig } from 'cypress';
 
+import { SHOPMOST_BASE_URL } from 'cypress.env.json';
+
 module.exports = defineConfig({
-  env: {
-    ADMIN_EMAIL: 'admin@mail.com',
-    ADMIN_PASSWORD: 'zaq1@WSX',
-  },
   e2e: {
-    baseUrl: 'http://localhost:3000',
+    baseUrl: SHOPMOST_BASE_URL,
   },
 });
