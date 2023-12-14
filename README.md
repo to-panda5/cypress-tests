@@ -7,9 +7,9 @@
 1. Check [prerequisites](#prerequisites).
 1. Run `npm install`.
 1. Create environment variables file:
-   - Make copy of [cypress-template.env.json](./cypress-template.env.json) file.
-   - Update values in the file.
-   - Rename it to `cypress.env.json`.
+   - Make copy of `.env_template` file.
+   - Update values in the copy.
+   - Rename copy to `.env`.
 1. Run `npm run cypress:open` or `npx cypress open` to start Cypress.
 1. A window will open with the Cypress test runner.
 

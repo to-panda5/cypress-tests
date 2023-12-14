@@ -1,9 +1,11 @@
 import { defineConfig } from 'cypress';
+import dotenv from 'dotenv';
 
-import { SHOPMOST_BASE_URL } from 'cypress.env.json';
+const env = dotenv.config().parsed;
 
-module.exports = defineConfig({
+export default defineConfig({
   e2e: {
-    baseUrl: SHOPMOST_BASE_URL,
+    baseUrl: env.SHOPMOST_BASE_URL,
   },
+  env,
 });
