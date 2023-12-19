@@ -1,12 +1,16 @@
 describe('Display categories', () => {
+    const baseUrl = Cypress.config('baseUrl');
+    const adminEmail = Cypress.env('ADMIN_EMAIL')
+    const adminPassword = Cypress.env('ADMIN_PASSWORD')
+
     it('go to categories', () => {
-        cy.visit('http://localhost:3000/admin/categories')
+        cy.visit('/admin/login')
         cy.location('pathname').should('eq', '/admin/login')
-        cy.get("#adminLoginForm").get('input[name="email"]').type('jan.kowalski@gmail.com')
-        cy.get("#adminLoginForm").get('input[name="password"]').type('KG123456')
+        cy.get("#adminLoginForm").get('input[name="email"]').type(adminEmail)
+        cy.get("#adminLoginForm").get('input[name="password"]').type(adminPassword)
         cy.get('.button').click()
         cy.location('pathname').should('eq', '/admin')
-        cy.visit('http://localhost:3000/admin/categories')
+        cy.get('.list-unstyled').contains('Categories').click()
         cy.location('pathname').should('eq', '/admin/categories')
     });
 });
