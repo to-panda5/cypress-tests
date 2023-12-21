@@ -4,6 +4,7 @@ describe('Display categories', () => {
     const adminPassword = Cypress.env('ADMIN_PASSWORD')
 
     it('go to categories', () => {
+        cy.exec('docker exec shopmost-db pg_restore -h localhost -U postgres -d shopmost -F c -c -v plik_dumpu.pgdump')
         cy.visit('/admin/login')
         cy.location('pathname').should('eq', '/admin/login')
         cy.get("#adminLoginForm").get('input[name="email"]').type(adminEmail)
