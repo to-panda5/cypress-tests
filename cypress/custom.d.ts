@@ -6,6 +6,8 @@ declare namespace Cypress {
       email: string,
     ) => Chainable<Response<GetCustomersResponse>>;
     deleteCustomer: (uuid: string) => Chainable<Response<void>>;
+    loadDatabaseDump: (dumpName: string) => Chainable
+    goToCategories: (login, password) => Chainable
   }
 }
 
