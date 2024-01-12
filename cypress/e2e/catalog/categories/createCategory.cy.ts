@@ -157,4 +157,24 @@ describe('Create category', () => {
         cy.get('.listing > tbody').find('tr').eq(1).find('td').eq(1).should('have.text', 'cos')
         cy.get('.listing > tbody').find('tr').eq(1).find('td').eq(3).should('have.text', 'No')
     })
+
+    it("Chancel in empty category creator", () => {
+        cy.loadDatabaseDump('empty_categories_dump')
+        cy.goToCategories(adminEmail, adminPassword)
+        cy.get('.button').children().contains('New Category').click()
+        cy.location('pathname').should('eq', '/admin/categories/new')
+        cy.get('button').contains('Cancel').click()
+        cy.location('pathname').should('eq', '/admin/categories')
+    })
+
+    it.only("Chancel in empty category creator", () => {
+        cy.loadDatabaseDump('empty_categories_dump')
+        cy.goToCategories(adminEmail, adminPassword)
+        cy.get('.button').children().contains('New Category').click()
+        cy.location('pathname').should('eq', '/admin/categories/new')
+        cy.get('.form-field-container').filter(':contains("Name")').find('input').type('cos')
+        cy.get('button').contains('Cancel').click()
+        cy.contains('Are you sure you want to chancel it').should('exist')
+        cy.location('pathname').should('eq', '/admin/categories/new')
+    })
 })
