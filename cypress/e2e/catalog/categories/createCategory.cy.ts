@@ -167,7 +167,7 @@ describe('Create category', () => {
         cy.location('pathname').should('eq', '/admin/categories')
     })
 
-    it.only("Chancel in empty category creator", () => {
+    it("Chancel in empty category creator", () => {
         cy.loadDatabaseDump('empty_categories_dump')
         cy.goToCategories(adminEmail, adminPassword)
         cy.get('.button').children().contains('New Category').click()
@@ -175,6 +175,18 @@ describe('Create category', () => {
         cy.get('.form-field-container').filter(':contains("Name")').find('input').type('cos')
         cy.get('button').contains('Cancel').click()
         cy.contains('Are you sure you want to chancel it').should('exist')
+        cy.location('pathname').should('eq', '/admin/categories/new')
+    })
+
+    it("Try create category with existing url key", () => {
+        cy.loadDatabaseDump('one_category')
+        cy.goToCategories(adminEmail, adminPassword)
+        cy.get('.button').children().contains('New Category').click()
+        cy.location('pathname').should('eq', '/admin/categories/new')
+        cy.get('.form-field-container').filter(':contains("Name")').find('input').type('cos')
+        cy.get('.form-field-container').filter(':contains("Url key")').find('input').type('category1')
+        cy.get('button').contains('Save').click()
+        cy.get('.Toastify__toast--error').should('exist')
         cy.location('pathname').should('eq', '/admin/categories/new')
     })
 })
